@@ -1,10 +1,16 @@
 <template>
   <v-container fluid grid-list-md >
 
-<transition name="slide-fade" >
-    <v-layout row wrap justify-center v-if="show">
-      <v-flex d-flex xs12 sm6 md5>
-        <v-card color="purple" dark height="249px">
+
+<transition mode="out-in"
+appear
+enter-active-class="animated bounceIn"
+leave-active-class="animated bounceOut" 
+:duration="500">
+
+    <v-layout row wrap justify-center v-if="show" key="info">
+      <v-flex d-flex xs12 sm6 md5 >
+        <v-card color="purple" dark height="249px" >
           <v-card-title primary class="">Author: {{ paginatedData[0].data.author }}</v-card-title>
           <v-img
              :src="paginatedData[0].data.thumbnail "
@@ -45,11 +51,17 @@
           <v-card-text>{{ paginatedData[3].data.title.slice(0,90) }}...</v-card-text>
         </v-card>
       </v-flex>
-    </v-layout>   
- </transition> 
+    </v-layout> 
+    </transition>
 
- <transition name="slide-fade">   
-     <v-layout row wrap justify-center >
+
+<transition mode="out-in"
+appear
+enter-active-class="animated bounceIn"
+leave-active-class="animated bounceOut" 
+:duration="500">
+
+     <v-layout row wrap justify-center v-if="show" key="info">
        <v-flex d-flex xs12 sm6 md3 child-flex>
         <v-card color="green lighten-2" dark justify-center height="250px">
          <v-card-title primary class="">Author: {{ paginatedData[4].data.author }}</v-card-title>
@@ -93,10 +105,14 @@
         </v-layout>
       </v-flex>
     </v-layout>
-   </transition> 
+   </transition>
 
-  <transition name="slide-fade" mode="out-in">
-    <v-layout row wrap justify-center >
+<transition mode="out-in"
+appear
+enter-active-class="animated bounceIn"
+leave-active-class="animated bounceOut" 
+:duration="500">
+    <v-layout row wrap justify-center v-if="show" key="info">
          <v-flex d-flex xs12 sm6 md6>
         <v-card color="purple" dark height="200px">
           <v-card-title  class="">Author: {{ paginatedData[8].data.author }}</v-card-title>
@@ -120,8 +136,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-   </transition> 
-
+  </transition>
   
 
 
@@ -179,30 +194,35 @@ export default {
       default: 10
     }
 },
+
  methods: {
 ...mapMutations(['SET_POSTS']),
 ...mapActions(['API_POSTS']),      
 
-//    copyAllPosts() {
-// this.posts = this.GET_POSTS;
-// console.log(this.posts);      
-// },
-  
- nextPage(){
+          callFunction: function () {
+            setTimeout(function () {
+             this.show = true
+            }, 100);  
+
+        },
+
+  nextPage(){
+           this.show = !this.show;
            this.pageNumber++;
-           this.show = false;
-},
-   
-   
-prevPage(){
-           this.pageNumber--;
-           this.show = true;
-}
+
+  },
+    
+  prevPage(){
+           this.show = !this.show;
+           this.pageNumber--; 
+
+                
+  }
       
 }, // methods
  created() {
             this.API_POSTS();
-            // this.copyAllPosts();
+
 
   
 },  // created
@@ -217,7 +237,6 @@ prevPage(){
               return Math.ceil(l/s);  
           }           
       },
-   
   
 paginatedData(){
 
@@ -238,23 +257,6 @@ paginatedData(){
   margin-top: -430px;
 }
 
-
-/* animation*/
-.slide-fade-enter-active {
-  transition: all .3s ease;
-}
-.slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.slide-fade-enter,  .slide-fade-leave-to
-/* .slide-fade-leave-active до версии 2.1.8 */ {
-  transform: translateX(640px);
-  opacity: 0;
-}
-.slide-fade-enter-to {
-  transform: translateX(0px);
-  opacity: 1;
-}
 </style>
 
 
