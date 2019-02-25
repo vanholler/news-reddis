@@ -199,11 +199,6 @@ export default {
 ...mapMutations(['SET_POSTS']),
 ...mapActions(['API_POSTS']),      
 
-          callFunction: function () {
-            setTimeout(function () {
-             this.show = true
-            }, 100);  
-
         },
 
   nextPage(){
