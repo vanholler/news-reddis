@@ -1,6 +1,8 @@
 <template>
   <v-container fluid grid-list-md >
-    <v-layout row wrap justify-center>
+
+<transition name="slide-fade" >
+    <v-layout row wrap justify-center >
       <v-flex d-flex xs12 sm6 md5>
         <v-card color="purple" dark height="249px">
           <v-card-title primary class="">Author: {{ paginatedData[0].data.author }}</v-card-title>
@@ -23,7 +25,7 @@
           <v-flex d-flex>
             <v-layout row wrap>
               <v-flex d-flex xs12 >
-                <v-card color="#757575" dark height="121px">
+                <v-card color="#757575" dark height="121px" width="320px">
                  <v-card-title primary class="">Author: {{ paginatedData[2].data.author }}</v-card-title>
                   <v-card-text>{{ paginatedData[2].data.title.slice(0,90)  }}</v-card-text>
                 </v-card>
@@ -44,11 +46,12 @@
         </v-card>
       </v-flex>
     </v-layout>   
+ </transition> 
 
-    
-     <v-layout row wrap justify-center>
+ <transition name="slide-fade">   
+     <v-layout row wrap justify-center >
        <v-flex d-flex xs12 sm6 md3 child-flex>
-        <v-card color="green lighten-2" dark justify-center>
+        <v-card color="green lighten-2" dark justify-center height="250px">
          <v-card-title primary class="">Author: {{ paginatedData[4].data.author }}</v-card-title>
          <v-img
              :src="paginatedData[4].data.thumbnail"
@@ -72,7 +75,7 @@
             <v-flex d-flex xs12 sm6 md3>
         <v-layout row wrap>
           <v-flex d-flex>
-            <v-card color="indigo" dark height="121px">
+            <v-card color="indigo" dark height="121px" width="320px">
              <v-card-title primary class="">Author: {{ paginatedData[6].data.author }} </v-card-title>
               <v-card-text>{{ paginatedData[6].data.title }}</v-card-text>
             </v-card>
@@ -80,7 +83,7 @@
           <v-flex d-flex>
             <v-layout row wrap>
               <v-flex d-flex  xs12>
-                <v-card color="#757575"  dark height="121px">
+                <v-card color="#757575"  dark height="121px" width="320px">
                  <v-card-title primary class="">Author: {{ paginatedData[8].data.author }}</v-card-title>
                   <v-card-text>{{ paginatedData[7].data.title }}</v-card-text>
                 </v-card>
@@ -90,8 +93,10 @@
         </v-layout>
       </v-flex>
     </v-layout>
-    
-    <v-layout row wrap justify-center>
+   </transition> 
+
+  <transition name="slide-fade" mode="out-in">
+    <v-layout row wrap justify-center >
          <v-flex d-flex xs12 sm6 md6>
         <v-card color="purple" dark height="200px">
           <v-card-title  class="">Author: {{ paginatedData[8].data.author }}</v-card-title>
@@ -115,7 +120,11 @@
         </v-card>
       </v-flex>
     </v-layout>
-    
+   </transition> 
+
+  
+
+
     <div class="pagination">
      <v-layout align-center justify-space-between row fill-height mb-5>
         <v-btn 
@@ -144,13 +153,20 @@
 
 <script>
 import axios from 'axios' 
+
+import { mapActions } from 'vuex';
+import { mapGetters } from 'vuex'
+import { mapMutations } from 'vuex';
+
 export default {
   name: 'posts',
     data() {
       return {
          posts: null,
-         need_data: 'https://www.reddit.com/r/all/top.json?limit=60',
          pageNumber: 1,
+         showLeft: false,
+         showRight: false,
+         show: true
          
   }
 
@@ -164,45 +180,42 @@ export default {
     }
 },
  methods: {
-                  
+...mapMutations(['SET_POSTS']),
+...mapActions(['API_POSTS']),      
+
    getAllPosts() {
-axios.get(this.need_data)
-.then(response => { this.posts = response.data.data.children;
-}) //1then
-.catch(error => {
-console.log('ошибка загрузки json' , error);
-})
-         
+this.posts = this.GET_POSTS;
+console.log(this.posts);      
 },
   
-nextPage(){
+ nextPage(){
            this.pageNumber++;
+           this.show = false;
 },
    
    
 prevPage(){
            this.pageNumber--;
+           this.show = true;
 }
       
 }, // methods
  created() {
-  
-             this.getAllPosts();
-             this.$on('onRight', function() {
-               this.pageNumber++;  
-             })
+            this.API_POSTS();
+            this.CopyAllPosts();
+
   
 },  // created
  computed:{
-  
+  ...mapGetters(['GET_POSTS']),
+
       pageCount(){
-          if (this.posts !== null || undefined) {
+          if (GET_POSTS !== null || undefined) {
                  let l = this.posts.length,
                      s = this.size;
               return Math.ceil(l/s);  
-          }
-              
-},
+          }           
+      },
    
   
 paginatedData(){
@@ -212,7 +225,7 @@ paginatedData(){
      if (this.posts !== null || undefined) {
         return this.posts.slice(start, end);     
      }
-    }
+    }  
 } //computed 
 }
 
@@ -224,13 +237,24 @@ paginatedData(){
   margin-top: -430px;
 }
 
+
+/* animation*/
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter,  .slide-fade-leave-to
+/* .slide-fade-leave-active до версии 2.1.8 */ {
+  transform: translateX(640px);
+  opacity: 0;
+}
+.slide-fade-enter-to {
+  transform: translateX(0px);
+  opacity: 1;
+}
 </style>
 
-<!--
-posts[0].data.author
-posts[0].data.title
-posts[0].data.url
-posts[0].data.score
--->
 
 
