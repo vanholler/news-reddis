@@ -8,9 +8,9 @@ enter-active-class="animated bounceIn"
 leave-active-class="animated bounceOut" 
 :duration="500">
 
-    <v-layout row wrap justify-center v-if="show" key="info">
+    <v-layout row wrap justify-center v-if="show" key="info" >
       <v-flex d-flex xs12 sm6 md5 >
-        <v-card color="purple" dark height="249px" >
+        <v-card color="purple" dark height="249px">
           <v-card-title primary class="">Author: {{ paginatedData[0].data.author }}</v-card-title>
           <v-img
              :src="paginatedData[0].data.thumbnail "
@@ -203,14 +203,16 @@ export default {
   nextPage(){
            this.show = !this.show;
            this.pageNumber++;
-
+            this.weit();
   },
     
   prevPage(){
            this.show = !this.show;
            this.pageNumber--; 
-
-                
+           this.weit();             
+  },
+  weit(){
+    setTimeout( () => this.show = !this.show, 100);  
   }
       
 }, // methods
@@ -252,6 +254,10 @@ paginatedData(){
 }
 
 </style>
+
+
+
+
 
 
 
