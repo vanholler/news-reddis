@@ -183,7 +183,7 @@ export default {
 ...mapMutations(['SET_POSTS']),
 ...mapActions(['API_POSTS']),      
 
-   getAllPosts() {
+   copyAllPosts() {
 this.posts = this.GET_POSTS;
 console.log(this.posts);      
 },
