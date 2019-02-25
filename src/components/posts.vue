@@ -2,7 +2,7 @@
   <v-container fluid grid-list-md >
 
 <transition name="slide-fade" >
-    <v-layout row wrap justify-center >
+    <v-layout row wrap justify-center v-if="show">
       <v-flex d-flex xs12 sm6 md5>
         <v-card color="purple" dark height="249px">
           <v-card-title primary class="">Author: {{ paginatedData[0].data.author }}</v-card-title>
@@ -131,7 +131,7 @@
         color="error" 
         fab
         dark 
-        v-if="posts !== null" 
+        v-if="this.GET_POSTS !== null" 
         :disabled="pageNumber === 1" 
         @click="prevPage">
         <v-icon>keyboard_arrow_left</v-icon>
@@ -141,7 +141,7 @@
         color="error" 
         fab 
         dark 
-        v-if="posts !== null" 
+        v-if="this.GET_POSTS !== null" 
         :disabled="pageNumber === 5" 
         @click="nextPage">
         <v-icon>keyboard_arrow_right</v-icon>
@@ -183,10 +183,10 @@ export default {
 ...mapMutations(['SET_POSTS']),
 ...mapActions(['API_POSTS']),      
 
-   copyAllPosts() {
-this.posts = this.GET_POSTS;
-console.log(this.posts);      
-},
+//    copyAllPosts() {
+// this.posts = this.GET_POSTS;
+// console.log(this.posts);      
+// },
   
  nextPage(){
            this.pageNumber++;
@@ -202,7 +202,7 @@ prevPage(){
 }, // methods
  created() {
             this.API_POSTS();
-            this.CopyAllPosts();
+            // this.copyAllPosts();
 
   
 },  // created
@@ -210,8 +210,9 @@ prevPage(){
   ...mapGetters(['GET_POSTS']),
 
       pageCount(){
-          if (GET_POSTS !== null || undefined) {
-                 let l = this.posts.length,
+
+          if (this.GET_POSTS !== null || undefined) {
+                 let l = this.GET_POSTS.length,
                      s = this.size;
               return Math.ceil(l/s);  
           }           
@@ -219,11 +220,11 @@ prevPage(){
    
   
 paginatedData(){
- 
+
      const start = (this.pageNumber-1) * this.size; 
      const   end = start + this.size; 
-     if (this.posts !== null || undefined) {
-        return this.posts.slice(start, end);     
+     if (this.GET_POSTS !== null || undefined) {
+        return this.GET_POSTS.slice(start, end);     
      }
     }  
 } //computed 
