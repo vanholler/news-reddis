@@ -199,7 +199,6 @@ export default {
 ...mapMutations(['SET_POSTS']),
 ...mapActions(['API_POSTS']),      
 
-        },
 
   nextPage(){
            this.show = !this.show;
